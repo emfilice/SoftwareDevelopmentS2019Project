@@ -1,0 +1,40 @@
+{% block content %}
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<link rel="stylesheet" href="/resources/demos/style.css" />
+<script>
+  $(function() {
+    $( ".datepicker" ).datepicker({
+      changeMonth: true,
+      changeYear: true,
+      // You can put more options here.
+
+    });
+  });
+</script>
+<form method="post" >
+{% if form.errors %}
+  {% for field in form %}
+      {% for error in field.errors %}
+          <div>
+              {{ error|escape }}
+          </div>
+      {% endfor %}
+  {% endfor %}
+  {% for error in form.non_field_errors %}
+      <div>
+          {{ error|escape }}
+      </div>
+  {% endfor %}
+{% endif %}
+{% csrf_token %}
+{{form}}
+Address:<input type="text" name="addr" value="{{addr}}" style="width: 300px;" readonly>
+Price:<input type="text" name="pr" value="0.00" readonly>
+Total:<input type="text" name="tot" value="0.00" readonly>
+<button type="submit" class="btn btn-default">Submit</button>
+
+<p><a href="/index">Home</a></p>
+{% endblock %}

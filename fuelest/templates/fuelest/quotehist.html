@@ -1,0 +1,11 @@
+{% block content %}
+<h1>History of quotes</h1>
+<ul>
+{% for quote in object_list %}
+    <li>Gallons requested: {{ quote.gallons }}; Address: {{ addr }}; Date: {{ quote.date }}; Price: {{ quote.price }}; Total: {{ quote.total }}</li>
+{% empty %}
+  <li>No quotes requested.</li>
+{% endfor %}
+</ul>
+<p><a href="/index">Home</a></p>
+{% endblock %}

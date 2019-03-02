@@ -1,0 +1,16 @@
+{% block content %}
+{% if profile_made %}
+<h1>Your profile</h1>
+<p>Full name: {{fullname}}</p>
+<p>Address line 1: {{addr1}}</p>
+<p>Address line 2: {{addr2}}</p>
+<p>City: {{city}}</p>
+<p>State: {{state}}</p>
+<p>Zip: {{zip}}</p>
+<p><a href="profile/edit">Edit your profile</a></p>
+{% else %}
+<p>Please <a href="profile/edit">create a profile!</a></p>
+{% endif %}
+
+<p><a href="/index">Home</a></p>
+{% endblock %}
