@@ -58,10 +58,15 @@ STATES=[
 class Address(models.Model):
     id = models.AutoField(primary_key=True)
     address1 = models.CharField(max_length=100)
-    address2 = models.CharField(max_length=100)
+    address2 = models.CharField(max_length=100, blank=True)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=2, choices=STATES)
     zip = models.PositiveIntegerField()
+    def __str__(self):
+        if not self.address2:
+            return self.address1 + ", " + self.city + ", " + self.state + " " + str(self.zip)
+        else:
+            return self.address1 + ", " + self.address2 + ", " + self.city + ", " + self.state + " " + str(self.zip) 
 
 class UserInfo(models.Model):
     id = models.AutoField(primary_key=True)
@@ -72,7 +77,7 @@ class UserInfo(models.Model):
     name = models.CharField(max_length=50)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
 
-class QuoteHistory(models.Model):
+class Quote(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
