@@ -1,11 +1,34 @@
+{% extends "fuelest/base.html" %}
+
 {% block content %}
 <h1>History of quotes</h1>
-<ul>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Gallons Requested</th>
+      <th scope="col">Address</th>
+      <th scope="col">Date</th>
+      <th scope="col">Price</th>
+      <th scope="col">Total</th>
+    </tr>
+  </thead>
+  <tbody>
 {% for quote in object_list %}
-    <li>Gallons requested: {{ quote.gallons }}; Address: {{ addr }}; Date: {{ quote.date }}; Price: {{ quote.price }}; Total: {{ quote.total }}</li>
+    <tr>
+      <th scope="row">{{forloop.counter}}</th>
+      <td>{{ quote.gallons }}</td>
+      <td>{{ addr }}</td>
+      <td>{{ quote.date }}</td>
+      <td>{{ quote.price }}</td>
+      <td>{{ quote.total }}</td>
+    </tr>
 {% empty %}
-  <li>No quotes requested.</li>
+    <tr>
+      <td></td>
+      <th scope="row">No quotes requested.</th>
+    </tr>
 {% endfor %}
-</ul>
-<p><a href="/index">Home</a></p>
+  </tbody>
+</table>
 {% endblock %}

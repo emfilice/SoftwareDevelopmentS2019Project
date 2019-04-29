@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django import forms
 from django.utils import timezone
+from django.contrib import messages
 from fuelest.forms import ProfileForm, AddressForm, QuoteForm
 from django.contrib.auth.forms import UserCreationForm
 
@@ -42,6 +43,16 @@ class ProfileView(TemplateView):
             context['zip'] = useraddr.zip
         return context
 
+class SuccessView(TemplateView):
+    template_name = 'fuelest/quotesuccess.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        userprof = UserInfo.objects.filter(username=User.objects.get(username=self.request.user.username))
+        profile_made = (len(userprof) != 0)
+        context['profile_made'] = profile_made
+        return context
+
+
 class QuoteListView(ListView):
     template_name = "fuelest/quotehist.html"
     paginate_by = 20
@@ -52,6 +63,9 @@ class QuoteListView(ListView):
         )
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        userprof = UserInfo.objects.filter(username=User.objects.get(username=self.request.user.username))
+        profile_made = (len(userprof) != 0)
+        context['profile_made'] = profile_made
         addr = Address.objects.get(id=UserInfo.objects.get(username=User.objects.get(username=self.request.user.username)).address.id)
         context['addr'] = addr
         return context
@@ -98,11 +112,13 @@ def register_model(request):
 
 def calculate_price():
     price = 2.0
-    return price        
+    return price
 
 def quote_model(request):
     addr = Address.objects.get(id=UserInfo.objects.get(username=User.objects.get(username=request.user.username)).address.id)
     pr = calculate_price();
+    userprof = UserInfo.objects.filter(username=User.objects.get(username=request.user.username))
+    profile_made = (len(userprof) != 0)
     if request.method == "POST":
         form = QuoteForm(request.POST)
         form_valid = form.is_valid()
@@ -116,4 +132,4 @@ def quote_model(request):
             return redirect("quotesuccess")
     else:
         form = QuoteForm()
-    return render(request, "fuelest/fuelquote.html", {"form": form, "addr": addr, "pr": pr})
+    return render(request, "fuelest/fuelquote.html", {"form": form, "addr": addr, "pr": pr, "profile_made": profile_made})
