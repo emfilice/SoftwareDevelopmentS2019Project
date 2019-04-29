@@ -10,6 +10,8 @@ from django.contrib.auth.forms import UserCreationForm
 
 from .models import UserInfo, Address, Quote
 
+from datetime import date
+
 class HomePageView(TemplateView):
     template_name = 'fuelest/index.html'
     def get_context_data(self, **kwargs):
@@ -119,9 +121,38 @@ def quote_model(request):
     pr = calculate_price();
     userprof = UserInfo.objects.filter(username=User.objects.get(username=request.user.username))
     profile_made = (len(userprof) != 0)
+    gal_err = ''
+    date_err = ''
+    pr_err = ''
+    tot_err = ''
+    gals = None
+    del_date = None
     if request.method == "POST":
-        form = QuoteForm(request.POST)
-        form_valid = form.is_valid()
+        gals = request.POST.get('gallons')
+        del_date = request.POST.get('delivery_date')
+        form_valid = True
+        if gals in ['', None] or int(gals) <= 0:
+            form_valid = False
+            gal_err = "Please enter a positive integer."
+        date_s = del_date
+        if date_s == '':
+            form_valid = False
+            date_err = "Please enter a valid future date."
+        else:
+            try:
+                dateT = date.fromisoformat(date_s)
+                if dateT < date.today():
+                    form_valid = False
+                    date_err = "Please enter a valid future date."
+            except ValueError:
+                form_valid = False
+                date_err = "Please enter a valid future date."
+        if request.POST.get('pr') == '--':
+            form_valid = False
+            pr_err = "Please generate price before continuing."
+        if request.POST.get('tot') == '--':
+            form_valid = False
+            tot_err = "Please generate price before continuing."
         if form_valid:
             a = form.save(commit=False)
             a.address = addr
@@ -132,4 +163,13 @@ def quote_model(request):
             return redirect("quotesuccess")
     else:
         form = QuoteForm()
-    return render(request, "fuelest/fuelquote.html", {"form": form, "addr": addr, "pr": pr, "profile_made": profile_made})
+    print(pr_err)
+    return render(request, "fuelest/fuelquote.html", {"addr": addr,
+                                                        "pr": pr,
+                                                        "profile_made": profile_made,
+                                                        "gal_err": gal_err,
+                                                        "date_err": date_err,
+                                                        "pr_err": pr_err,
+                                                        "tot_err": tot_err,
+                                                        "gals": gals,
+                                                        "del_date": del_date})

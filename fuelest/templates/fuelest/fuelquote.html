@@ -16,10 +16,43 @@
 
         document.getElementById("total_field").value = (Math.ceil({{pr}} * $("#id_gallons").val() * 100) / 100).toFixed(2);
     });
+    $("#get_price").click(function() {
+        let price = 0.0;
+        let is_valid = true;
+        if(document.getElementById("gallons").value <= 0)
+        {
+          $('#gal_err_lab').text("Please enter a positive integer.");
+          is_valid = false;
+        }
+        else {
+            $('#gal_err_lab').text("");
+        }
+        if(document.getElementById("delivery_date").value == '')
+        {
+          $('#date_err_lab').text("Please enter a valid future date.");
+          is_valid = false;
+        }
+        else {
+          date1 = new Date(document.getElementById("delivery_date").value);
+          date2 = new Date();
+          if(date1 < date2)
+          {
+            $('#date_err_lab').text("Please enter a valid future date.");
+            is_valid = false;
+          }
+          else {
+            $('#date_err_lab').text("");
+          }
+        }
+        if(is_valid)
+        {
+          /*insert pricing module here*/
+          document.getElementById("pr").value = price;
+        }
+    });
   });
-
 </script>
-<form method="post" >
+<form method="post">
 {% if form.errors %}
   {% for field in form %}
       {% for error in field.errors %}
@@ -35,9 +68,12 @@
   {% endfor %}
 {% endif %}
 {% csrf_token %}
-{{form.as_p}}
+<p>Gallons Requested: <input type="number" id="gallons" name="gallons" value="{{gals}}"><label id="gal_err_lab">{{gal_err}}</label></p>
+<p>Date Of Delivery: <input type="date" id="delivery_date" name="delivery_date" value="{{del_date}}"><label id="date_err_lab">{{date_err}}</label></p>
 <p>Address: <input type="text" name="addr" value="{{addr}}" style="width: 300px;" readonly></p>
-<p>Price: <input type="text" name="pr" value="{{pr}}" readonly></p>
-<p>Total: <input id="total_field" type="text" name="tot" value="0.00" readonly></p>
-<p><button type="submit" class="btn btn-default">Submit</button></p>
+<p>Price: <input type="text" id="pr" value="--" name="pr" readonly><label id="pr_err_lab">{{pr_err}}</label></p>
+<p>Total: <input id="total_field" type="text" name="tot" value="--" readonly><label id="tot_err_lab">{{tot_err}}</label></p>
+<p><button type="button" class="btn btn-default" id="get_price">Get Price</button>
+<button type="submit" class="btn btn-default">Submit</button></p>
+</form>
 {% endblock %}
