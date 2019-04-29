@@ -1,0 +1,29 @@
+
+.nav-pills a {
+    background-color: #454545;
+    color: white;
+}
+
+.nav-pills a:hover {
+    background-color: #999999;
+    color: white;
+}
+
+.nav-pills a:focus {
+    background-color: #ADADAD;
+    color: white;
+}
+
+.content {
+  margin-left: 30px;
+  margin-right: 30px;
+  padding: 5px;
+  min-width: 549px;
+  border: 2px solid #ADADAD;
+  border-radius: 5px;
+  display:inline-block;
+}
+
+.title {
+  margin-left: 30px;
+}
