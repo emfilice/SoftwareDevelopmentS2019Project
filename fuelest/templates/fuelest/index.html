@@ -2,14 +2,9 @@
 
 {% block content %}
 <p>You have successfully logged in. Welcome, {{ user.username }}!</p>
-<ul>
-  <li><a href="/profile">View/edit profile</a></li>
 {% if profile_made %}
-  <li><a href="/quotes/generate">Generate a quote</a></li>
-  <li><a href="/quotes/history">View quote history</a></li>
 {% else %}
-  <li>Please create a profile to access the quotes module.</li>
+<p>Please create a profile to access the quotes module.</p>
 {% endif %}
-</ul>
 
 {% endblock %}
