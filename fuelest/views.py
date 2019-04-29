@@ -154,16 +154,14 @@ def quote_model(request):
             form_valid = False
             tot_err = "Please generate price before continuing."
         if form_valid:
-            a = form.save(commit=False)
+            a = Quote(user=User.objects.get(username=request.user.username))
+            a.gallons = gals
             a.address = addr
-            a.user = User.objects.get(username=request.user.username)
-            a.price = pr
-            a.total = a.gallons * a.price
+            a.date = del_date
+            a.price = request.POST.get('pr')
+            a.total = request.POST.get('tot')
             a.save()
             return redirect("quotesuccess")
-    else:
-        form = QuoteForm()
-    print(pr_err)
     return render(request, "fuelest/fuelquote.html", {"addr": addr,
                                                         "pr": pr,
                                                         "profile_made": profile_made,
@@ -172,4 +170,6 @@ def quote_model(request):
                                                         "pr_err": pr_err,
                                                         "tot_err": tot_err,
                                                         "gals": gals,
-                                                        "del_date": del_date})
+                                                        "del_date": del_date,
+                                                        "state": addr.state,
+                                                        "hist": (len(Quote.objects.filter(user=User.objects.get(username=request.user.username))) > 0)})

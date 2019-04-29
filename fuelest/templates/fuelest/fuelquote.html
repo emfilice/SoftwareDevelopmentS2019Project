@@ -46,8 +46,24 @@
         }
         if(is_valid)
         {
-          /*insert pricing module here*/
+          let base_price = 1.50
+          let location_factor = 0.04;
+          if('{{state}}' == 'TX')
+            location_factor = 0.02;
+          let hist_factor = 0;
+          if('{{hist}}'=='True')
+            hist_factor = 0.01;
+          let gal_factor = 0.03;
+          if(document.getElementById("gallons").value > 1000)
+            gal_factor = 0.02;
+          let fluc_factor = 0.04;
+          let ddate = new Date(document.getElementById("delivery_date").value);
+          if(ddate.getMonth() < 2 || ddate.getMonth() > 7)
+            fluc_factor = 0.03;
+          margin = base_price*(location_factor-hist_factor+gal_factor+.1+fluc_factor);
+          price = base_price + margin;
           document.getElementById("pr").value = price;
+          document.getElementById("total_field").value = price*document.getElementById("gallons").value;
         }
     });
   });
